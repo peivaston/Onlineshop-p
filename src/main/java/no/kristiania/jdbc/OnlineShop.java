@@ -12,62 +12,64 @@ import java.util.Properties;
 
 public class OnlineShop {
 
-    private OrderDao orderDao;
+    private ProjectMemberDao memberDao;
     private BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     private PGSimpleDataSource dataSource;
-    private ProductDao productDao;
+    private ProjectMemberDao projectMemberDao;
 
     public OnlineShop() throws IOException {
         Properties properties = new Properties();
-        properties.load(new FileReader("onlinebutikk.properties"));
+        properties.load(new FileReader("src/main/resources/task-manager.properties"));
 
         dataSource = new PGSimpleDataSource();
 
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/onlinebutikk");
-        dataSource.setUser("onlinebutikk");
+        dataSource.setUrl(properties.getProperty("dataSource.url"));
+        dataSource.setUser(properties.getProperty("dataSource.username"));
         dataSource.setPassword(properties.getProperty("dataSource.password"));
 
         Flyway.configure().dataSource(dataSource).load().migrate();
 
-        productDao = new ProductDao(dataSource);
-        orderDao = new OrderDao(dataSource);
+        projectMemberDao = new ProjectMemberDao(dataSource);
+        memberDao = new ProjectMemberDao(dataSource);
 
     }
+
+
+/*    private OrderDao orderDao;
+    private BufferedReader input = new BufferedReader((new InputStreamReader(System.in)));
+    private PGSimpleDataSource dataSource;
+    private ProductDao productDao;*/
 
     public static void main(String[] args) throws IOException, SQLException {
         new OnlineShop().run();
+
     }
 
+
     private void run() throws IOException, SQLException {
-        System.out.println("Choose action: create [task] | create [member]");
+        System.out.println("Type in ProjectMember: Type in members]");
         String action = input.readLine();
 
         switch (action.toLowerCase()) {
-            case "task":
-                insertProjectMember();
-                break;
-            case "member":
+            case "project_members":
                 insertMember();
+                System.out.println("Current members " + projectMemberDao.listAll());
                 break;
+
         }
 
-        System.out.println("Current tasks " + productDao.listAll());
-
     }
+
 
     private void insertMember() throws IOException, SQLException {
-        System.out.println("Please type the name of new task");
-        Order order = new Order();
-        order.setName(input.readLine());
-        orderDao.insert(order);
-    }
-
-    private void insertProjectMember() throws IOException, SQLException {
-        System.out.println("Please type the name of new task");
+        System.out.println("Please type the name of new members");
         String productName = input.readLine();
-        Product product = new Product();
-        product.setName(productName);
-        productDao.insert(product);
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setName(productName);
+        projectMemberDao.insert(projectMember);
     }
-
 }
+
+
+
+

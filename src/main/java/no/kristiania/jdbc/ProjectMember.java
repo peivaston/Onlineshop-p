@@ -2,7 +2,7 @@ package no.kristiania.jdbc;
 
 import java.util.Objects;
 
-public class Product {
+public class ProjectMember {
     private String name;
 
     public void setName(String name) {
@@ -18,8 +18,8 @@ public class Product {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(name, product.name);
+        ProjectMember projectMember = (ProjectMember) o;
+        return Objects.equals(name, projectMember.name);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Products{" +
+        return "project_members{" +
                 "name='" + name + '\'' +
                 '}';
     }

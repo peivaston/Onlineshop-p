@@ -13,11 +13,10 @@ public abstract class AbstractDao<T> {
 
     public AbstractDao(DataSource dataSource) { this.dataSource = dataSource;    }
 
-    public long insert(T product, String sql1) throws SQLException {
+    public long insert(T projectMember, String sql1) throws SQLException {
         try (Connection connection= dataSource.getConnection()) {
-            String sql = sql1;
             try (PreparedStatement statement = connection.prepareStatement(sql1, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                insertObject(product, statement);
+                insertObject(projectMember, statement);
                 statement.executeUpdate();
 
                 ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -28,21 +27,22 @@ public abstract class AbstractDao<T> {
         }
     }
 
-    protected abstract void insertObject(T product, PreparedStatement stmt) throws SQLException;
+    protected abstract void insertObject(T projectMember, PreparedStatement statement) throws SQLException;
 
     public List<T> listAll(String sql) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                try (ResultSet rs = stmt.executeQuery()) {
-                    List<T> products = new ArrayList<>();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                try (ResultSet rs = statement.executeQuery()) {
+                    List<T> projectMember = new ArrayList<>();
                     while (rs.next()) {
-                        products.add(readObject(rs));
+                        projectMember.add(readObject(rs));
                     }
-                    return products;
+                    return projectMember;
                 }
             }
         }
     }
 
     protected abstract T readObject(ResultSet rs) throws SQLException;
+
 }
